@@ -10,11 +10,19 @@ import java.util.List;
  */
 public class Portfolio
 {
+    private final static boolean DEFAULT_ALLOW_FRACTIONAL_SHARES = false;
     private List<Investment> investments;
+    private boolean allowFractionalShares;
 
     public Portfolio(List<Investment> investments)
     {
+        this(investments, DEFAULT_ALLOW_FRACTIONAL_SHARES);
+    }
+
+    public Portfolio(List<Investment> investments, boolean allowFractionalShares)
+    {
         this.investments = investments;
+        this.allowFractionalShares = allowFractionalShares;
     }
 
     public void rebalance()
@@ -23,7 +31,7 @@ public class Portfolio
         for (Investment investment : investments)
         {
             BigDecimal targetValue = totalValue.multiply(investment.targetAllocation);
-            Long newShares = Money.divide(targetValue, investment.sharePrice).longValue();
+            BigDecimal newShares = Money.divide(targetValue, investment.sharePrice, allowFractionalShares);
             investment.adjust(newShares, totalValue);
         }
     }
@@ -41,8 +49,8 @@ public class Portfolio
     @Override
     public String toString()
     {
-        String formatString = "%6s%10.4f%10.4f%10s%10s%10s%n";
-        String s = String.format(formatString.replace("10.4f", "10s"),
+        String formatString = "%6s%10.4f%10.4f%10s%10s%10.2f%n";
+        String s = String.format(formatString.replaceAll("10.[2,4]f", "10s"),
                                  "Ticker",
                                  "% Target",
                                  "% Actual",

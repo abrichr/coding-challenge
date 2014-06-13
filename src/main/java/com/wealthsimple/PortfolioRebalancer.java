@@ -15,9 +15,21 @@ public class PortfolioRebalancer
     public static void main(String[] args)
     {
         Portfolio portfolio = new Portfolio(Arrays.asList(
-                new Investment("GOOG", new BigDecimal(".60"), new BigDecimal(".5096"), 52L, new BigDecimal("98")),
-                new Investment("AAPL", new BigDecimal(".30"), new BigDecimal(".2992"), 136L, new BigDecimal("22")),
-                new Investment("TSLA", new BigDecimal(".10"), new BigDecimal(".1912"), 239L, new BigDecimal("8"))
+                new Investment("GOOG",
+                               new BigDecimal(".60"),
+                               new BigDecimal(".5096"),
+                               new BigDecimal("52"),
+                               new BigDecimal("98")),
+                new Investment("AAPL",
+                               new BigDecimal(".30"),
+                               new BigDecimal(".2992"),
+                               new BigDecimal("136"),
+                               new BigDecimal("22")),
+                new Investment("TSLA",
+                               new BigDecimal(".10"),
+                               new BigDecimal(".1912"),
+                               new BigDecimal("239"),
+                               new BigDecimal("8"))
         ));
 
         PortfolioRebalancer portfolioRebalancer = new PortfolioRebalancer();

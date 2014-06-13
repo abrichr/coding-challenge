@@ -2,6 +2,7 @@ package com.wealthsimple;
 
 import org.apache.commons.lang3.Validate;
 
+import java.io.PrintStream;
 import java.math.BigDecimal;
 
 /**
@@ -12,13 +13,13 @@ public class Investment
     final String ticker;
     BigDecimal targetAllocation;
     BigDecimal actualAllocation;
-    Long       sharesOwned;
+    BigDecimal sharesOwned;
     BigDecimal sharePrice;
 
     public Investment(String ticker,
                       BigDecimal targetAllocation,
                       BigDecimal actualAllocation,
-                      Long sharesOwned,
+                      BigDecimal sharesOwned,
                       BigDecimal sharePrice)
     {
         this.ticker = validateTicker(ticker);
@@ -30,20 +31,28 @@ public class Investment
 
     public BigDecimal getValue()
     {
-        return sharePrice.multiply(new BigDecimal(sharesOwned));
+        return sharePrice.multiply(sharesOwned);
     }
 
-    public void adjust(Long newShares, BigDecimal portfolioValue)
+    public void adjust(BigDecimal newShares, BigDecimal portfolioValue)
+    {
+        adjust(newShares, portfolioValue, System.out);
+    }
+
+    void adjust(BigDecimal newShares, BigDecimal portfolioValue, PrintStream outputStream)
     {
         validateShares(newShares, "newShares");
         validateMoney(portfolioValue, "portfolioValue");
 
-        Long diffShares = newShares - sharesOwned;
-        if (diffShares != 0)
+        BigDecimal diffShares = newShares.subtract(sharesOwned);
+        if (!diffShares.equals(BigDecimal.ZERO))
         {
-            printTransaction(diffShares);
+            if (outputStream != null)
+            {
+                outputStream.println(getTransactionString(diffShares));
+            }
             sharesOwned = newShares;
-            actualAllocation = Money.divide(sharePrice.multiply(BigDecimal.valueOf(newShares)), portfolioValue);
+            actualAllocation = Money.divide(sharePrice.multiply(newShares), portfolioValue, true);
         }
     }
 
@@ -63,10 +72,10 @@ public class Investment
         return allocation;
     }
 
-    private Long validateShares(Long sharesOwned, String name)
+    private BigDecimal validateShares(BigDecimal sharesOwned, String name)
     {
         Validate.notNull(sharesOwned, String.format("%s cannot be null", name));
-        Validate.isTrue(sharesOwned >= 0, String.format("%s cannot be negative", name));
+        Validate.isTrue(sharesOwned.compareTo(BigDecimal.ZERO) >= 0, String.format("%s cannot be negative", name));
         return sharesOwned;
     }
 
@@ -77,12 +86,14 @@ public class Investment
         return sharePrice;
     }
 
-    private void printTransaction(Long diffShares)
+    String getTransactionString(BigDecimal diffShares)
     {
-        String op = diffShares < 0 ? "sell" : "buy";
-        System.out.println(String.format("%s %d shares of %s",
-                                         op,
-                                         Math.abs(diffShares),
-                                         ticker));
+        String operation = diffShares.compareTo(BigDecimal.ZERO) > 0 ? "buy" : "sell";
+        String noun = diffShares.abs().compareTo(BigDecimal.ONE) > 0 ? "shares" : "share";
+        return String.format("%s %s %s of %s",
+                             operation,
+                             diffShares.abs(),
+                             noun,
+                             ticker);
     }
 }

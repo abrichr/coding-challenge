@@ -11,8 +11,8 @@ public class Money
     private static final int          DEFAULT_DIVISION_SCALE = 4;
     private static final RoundingMode DEFAULT_ROUNDING_MODE  = RoundingMode.HALF_EVEN;
 
-    public static BigDecimal divide(BigDecimal dividend, BigDecimal divisor)
+    public static BigDecimal divide(BigDecimal dividend, BigDecimal divisor, boolean keepFraction)
     {
-        return dividend.divide(divisor, DEFAULT_DIVISION_SCALE, DEFAULT_ROUNDING_MODE);
+        return dividend.divide(divisor, keepFraction ? DEFAULT_DIVISION_SCALE : 0, DEFAULT_ROUNDING_MODE);
     }
 }

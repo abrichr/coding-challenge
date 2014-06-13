@@ -11,9 +11,9 @@ public class PortfolioTest
     @Test
     public void testGetValue()
     {
-        Long numShares1 = 10L;
+        BigDecimal numShares1 = new BigDecimal("10");
         BigDecimal value1 = new BigDecimal("123.45");
-        Long numShares2 = 20L;
+        BigDecimal numShares2 = new BigDecimal("20");
         BigDecimal value2 = new BigDecimal("678.90");
 
         Portfolio portfolio = new Portfolio(Arrays.asList(
@@ -22,7 +22,7 @@ public class PortfolioTest
         ));
 
         BigDecimal expectedValue =
-                (new BigDecimal(numShares1)).multiply(value1).add((new BigDecimal(numShares2)).multiply(value2));
+                numShares1.multiply(value1).add(numShares2.multiply(value2));
         BigDecimal actualValue = portfolio.getValue();
 
         Assert.assertEquals("Expected value was not equal to actual value", expectedValue, actualValue);
