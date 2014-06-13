@@ -1,6 +1,7 @@
 # Portfolio Rebalancer
 
 A simple Portfolio rebalancer module, featuring:
+
     * Support for fractional shares
     * Thorough parameter validation on all public methods
     * Dependency management (Gradle)
