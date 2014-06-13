@@ -17,8 +17,8 @@ public class PortfolioTest
         BigDecimal value2 = new BigDecimal("678.90");
 
         Portfolio portfolio = new Portfolio(Arrays.asList(
-                new Investment(null, null, null, numShares1, value1),
-                new Investment(null, null, null, numShares2, value2)
+                new Investment("", BigDecimal.ZERO, BigDecimal.ZERO, numShares1, value1),
+                new Investment("", BigDecimal.ZERO, BigDecimal.ZERO, numShares2, value2)
         ));
 
         BigDecimal expectedValue =

@@ -20,7 +20,6 @@ public class PortfolioRebalancer
 
     public static void main(String[] args)
     {
-
         Portfolio portfolio = new Portfolio(Arrays.asList(
                 new Investment("GOOG", new BigDecimal(".60"), new BigDecimal(".5096"), 52L, new BigDecimal("98")),
                 new Investment("AAPL", new BigDecimal(".30"), new BigDecimal(".2992"), 136L, new BigDecimal("22")),
@@ -33,8 +32,9 @@ public class PortfolioRebalancer
 
     public void rebalance()
     {
-        logger.info("Before rebalancing:\n" + portfolio);
+        logger.debug("Before rebalancing:\n" + portfolio);
         portfolio.rebalance();
-        logger.info("After rebalancing:\n" + portfolio);
+        logger.debug("After rebalancing:\n" + portfolio);
     }
+
 }

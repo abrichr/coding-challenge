@@ -1,5 +1,7 @@
 package com.wealthsimple;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -24,18 +26,7 @@ public class Portfolio
             BigDecimal sharePrice = investment.sharePrice;
             BigDecimal targetValue = totalValue.multiply(investment.targetAllocation);
             Long newShares = targetValue.divide(sharePrice, 2, RoundingMode.HALF_EVEN).longValue();
-            Long diffShares = newShares - investment.sharesOwned;
-            if (diffShares != 0)
-            {
-                String op = diffShares < 0 ? "sell" : "buy";
-                System.out.println(String.format("%s %d shares of %s",
-                                                 op,
-                                                 Math.abs(diffShares),
-                                                 investment.ticker));
-                investment.sharesOwned = newShares;
-                investment.actualAllocation = sharePrice.multiply(new BigDecimal(newShares))
-                                                        .divide(totalValue, 2, RoundingMode.HALF_EVEN);
-            }
+            investment.adjust(newShares, totalValue);
         }
     }
 
@@ -78,7 +69,7 @@ public class Portfolio
             totalValue = totalValue.add(investment.getValue());
         }
         String totalString = String.format(formatString, "Total", totalTarget, totalActual, "-", "-", totalValue);
-        s += String.format("%s%n", new String(new char[totalString.length()]).replace("\0", "-"));
+        s += String.format("%s%n", StringUtils.repeat("-", totalString.length()));
         s += totalString;
         return s;
     }
