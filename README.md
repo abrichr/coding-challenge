@@ -26,3 +26,5 @@ If fractional shares are enabled, this results in a perfectly rebalanced portfol
 In this design, a Portfolio and its Investments are somewhat tightly coupled, since an Investment must know about the total value of the portfolio in order to maintain its actual allocation. While sufficient for the purposes of this module, a less leaky approach might involve an adapter class representing the value of an Investment within a Portfolio. 
 
 Additionally, in a well designed system it is highly unlikely that a Portfolio would be stored as a CSV. If it were, a CSV library would be preferable to the current implementation of PortfolioRebalancer.loadPortfolio(). However, a significantly better approach would be to store this information within a database. Similarly, transaction output and logging would likely not be printed to the console.
+
+Finally, instead of a utility class with static methods, encapsulating logic for operations on financial values in a Money object will be easier to maintain and extend as the project grows. For a project this size, however, the current design is simpler.
