@@ -16,6 +16,15 @@ public class Investment
     BigDecimal sharesOwned;
     BigDecimal sharePrice;
 
+    /**
+     * Create an Investment.
+     *
+     * @param ticker           A String identifying this Investment. Cannot be null.
+     * @param targetAllocation The target allocation (between 0 and 1) of this Investment within the portfolio. Cannot be null.
+     * @param actualAllocation The actual allocation (between 0 and 1) of this Investment within the portfolio. Cannot be null.
+     * @param sharesOwned      The number of shares of this Investment.
+     * @param sharePrice       The price of a single share of this Investment.
+     */
     public Investment(String ticker,
                       BigDecimal targetAllocation,
                       BigDecimal actualAllocation,
@@ -29,16 +38,32 @@ public class Investment
         this.sharePrice = validateMoney(sharePrice, "sharePrice");
     }
 
+    /**
+     * Get the value of this Investment.
+     *
+     * @return The shareprice times the number of shares owned.
+     */
     public BigDecimal getValue()
     {
         return sharePrice.multiply(sharesOwned);
     }
 
+    /**
+     * Adjust the number of shares (and consequently the actual allocation) of this Investment.
+     * @param newShares         The number of shares to adjust this Investment by.
+     * @param portfolioValue    The total value of the portfolio (used to calculate the actual allocation).
+     */
     public void adjust(BigDecimal newShares, BigDecimal portfolioValue)
     {
         adjust(newShares, portfolioValue, System.out);
     }
 
+    /**
+     * Adjust the number of shares (and consequently the actual allocation) of this Investment.
+     * @param newShares         The number of shares to adjust this Investment by. Cannot be null or negative.
+     * @param portfolioValue    The total value of the portfolio (used to calculate the actual allocation). Cannot be null or negative.
+     * @param outputStream      The Stream to which to output transactions ("buy" or "sell"). May be null.
+     */
     void adjust(BigDecimal newShares, BigDecimal portfolioValue, PrintStream outputStream)
     {
         validateShares(newShares, "newShares");

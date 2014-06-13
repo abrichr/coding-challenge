@@ -1,7 +1,9 @@
 package com.wealthsimple;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 
+import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -11,31 +13,61 @@ import java.util.List;
 public class Portfolio
 {
     private final static boolean DEFAULT_ALLOW_FRACTIONAL_SHARES = false;
-    private List<Investment> investments;
+    List<Investment> investments;
     private boolean allowFractionalShares;
 
+    /**
+     * Create a portfolio out of the given Investments. Does not allow fractional shares.
+     *
+     * @param investments
+     */
     public Portfolio(List<Investment> investments)
     {
         this(investments, DEFAULT_ALLOW_FRACTIONAL_SHARES);
     }
 
+    /**
+     * Create a Portfolio out of the given Investments, with the option of specifying whether to allow fractional shares.
+     *
+     * @param investments           A list of Investments
+     * @param allowFractionalShares A boolean indicating whether to allow fractional shares
+     */
     public Portfolio(List<Investment> investments, boolean allowFractionalShares)
     {
+        Validate.notNull(investments, "investments cannot be null");
         this.investments = investments;
         this.allowFractionalShares = allowFractionalShares;
     }
 
+    /**
+     * Rebalance this portfolio.
+     */
     public void rebalance()
+    {
+        rebalance(System.out);
+    }
+
+    /**
+     * Rebalance this portfolio, while specifying the output stream.
+     *
+     * @param outputStream The stream to which to print output.
+     */
+    public void rebalance(PrintStream outputStream)
     {
         BigDecimal totalValue = getValue();
         for (Investment investment : investments)
         {
             BigDecimal targetValue = totalValue.multiply(investment.targetAllocation);
             BigDecimal newShares = Money.divide(targetValue, investment.sharePrice, allowFractionalShares);
-            investment.adjust(newShares, totalValue);
+            investment.adjust(newShares, totalValue, outputStream);
         }
     }
 
+    /**
+     * Get the total value of all the investments in this portfolio.
+     *
+     * @return Sum of values of investments
+     */
     public BigDecimal getValue()
     {
         BigDecimal value = BigDecimal.ZERO;

@@ -1,39 +1,21 @@
-# Coding Challenge
+# Portfolio Rebalancer
 
-Here is a sample project that will give us some insight into your current level of experience.
+A simple Portfolio rebalancer module, featuring:
+    - Support for fractional shares
+    - Thorough parameter validation on all public methods
+    - Dependency management (Gradle)
+    - Logging (log4j)
+    
+Portfolios consists of one or more Investments, which are read from a CSV file and instantiated by PortfolioRebalancer. A Money utility class is also included for maintaining consistency across operations.
 
-This is a simple project, but organize, design, test and document your code as if it were going into production. Write your README as if it was for a production service, and include the following items:
+A sample portfolio file is included under <pre>resources/test-portfolio.csv</pre>, although you may specify the full path to your own as the first command line parameter to PortfolioRebalancer. To enable verbose logging, uncomment line 3 in the <pre>log4j.properties</pre> file.
 
-* Reasoning behind your technical choices
-* Trade-offs you might have made, or what you might do differently if you were to spend additional time on the project
+## Technical Discussion
 
-## Functional spec
+The rebalancing logic is contained within Portfolio.rebalance(), which in turn calls Investment.adjust() to adjust each Investment. The rebalancing logic is very simple: for each investment, simply calculate the target value as the product of the share price and the target allocation. Then determine the number of shares required by dividing the target value by the share price.
 
-Create a portfolio rebalancing module. Each WealthSimple customer has a portfolio with a set of investments along with target allocations for these investments. However, as share prices fluctuate, the actual allocations of investments may diverge from the target allocations. For example:
+If fractional shares are enabled, this results in a perfectly rebalanced portfolio, i.e. with 100% value utilization. If fractional shares are not enabled, this may result in a rebalanced portfolio whose value is less than the origianl portfolio value by some value greater than an individual share price. Essentially, this means that money that could be used to invest is being unused. A slightly more sophisticated approach might involve attempting to purchase additional shares until the remaining total value is less than the lowest share price.
 
-| Ticker | Target allocation | Actual allocation | Shares owned | Share price |
-|--------|-------------------|-------------------|--------------|-------------|
-| GOOG   | 60%               | 50.96%            | 52           | $98         |
-| AAPL   | 30%               | 29.92%            | 136          | $22         |
-| TSLA   | 10%               | 19.12%            | 239          | $8          |
+In this design, a Portfolio and its Investments are somewhat tightly coupled, since an Investment must know about the total value of the portfolio in order to maintain its actual allocation. While sufficient for the purposes of this module, a less leaky approach might involve an adapter class representing the value of an Investment within a Portfolio. 
 
-The job of the rebalancing module is to buy or sell shares to bring the actual allocation of investments as close as possible to the target allocations.
-
-This program should not have any UI. It should take in the current state of investments and target allocations as inputs, and output the set of buys and sells necessary to rebalance these investments (e.g `buy 9 shares of GOOG, sell 114 shares of TSLA`).
-
-## Technical spec
-
-Here are some languages we use at WealthSimple -- feel free to use any to complete the challenge:
-
-* Ruby (our web backend is written in Ruby)
-* Java (our trade execution code is written in Java)
-* CoffeeScript/JavaScript (our web frontend uses CoffeeScript)
-
-## How we review
-
-The aspects of your code we will judge include:
-
-* Functionality: Does the application do what was asked?
-* Code quality: Is the code simple, easy to understand, and maintainable?
-* Testing: How thorough are the automated tests? Will they be difficult to change if the requirements of the application were to change?
-* Technical choices: Do choices of libraries, frameworks, etc. seem appropriate for the chosen application?
+Additionally, in a well designed system it is highly unlikely that a Portfolio would be stored as a CSV. If it were, a CSV library would be preferable to the current implementation of PortfolioRebalancer.loadPortfolio(). However, a significantly better approach would be to store this information within a database. Similarly, transaction output and logging would likely not be printed to the console.
