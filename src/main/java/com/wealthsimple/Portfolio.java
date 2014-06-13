@@ -33,14 +33,18 @@ public class Portfolio
     @Override
     public String toString()
     {
-        String formatString = "%s\t%10s\t%10s\t%10s\t%10s\t%10s%n";
-        String s = String.format(formatString,
+        String formatString = "%6s%10.4f%10.4f%10s%10s%10s%n";
+        String s = String.format(formatString.replace("10.4f", "10s"),
                                  "Ticker",
                                  "% Target",
                                  "% Actual",
                                  "# Owned",
                                  "Price",
                                  "Value");
+
+        BigDecimal totalTarget = BigDecimal.ZERO;
+        BigDecimal totalActual = BigDecimal.ZERO;
+        BigDecimal totalValue = BigDecimal.ZERO;
         for (Investment investment : investments)
         {
             s += String.format(formatString,
@@ -50,7 +54,13 @@ public class Portfolio
                                investment.sharesOwned,
                                investment.sharePrice,
                                investment.getValue());
+            totalTarget = totalTarget.add(investment.targetAllocation);
+            totalActual = totalActual.add(investment.actualAllocation);
+            totalValue = totalValue.add(investment.getValue());
         }
+        String totalString = String.format(formatString, "Total", totalTarget, totalActual, "-", "-", totalValue);
+        s += String.format("%s%n", new String(new char[totalString.length()]).replace("\0", "-"));
+        s += totalString;
         return s;
     }
 }
