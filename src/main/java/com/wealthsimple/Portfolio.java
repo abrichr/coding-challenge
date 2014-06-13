@@ -1,6 +1,7 @@
 package com.wealthsimple;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 /**
@@ -17,7 +18,25 @@ public class Portfolio
 
     public void rebalance()
     {
-        // TODO: implement
+        BigDecimal totalValue = getValue();
+        for (Investment investment : investments)
+        {
+            BigDecimal sharePrice = investment.sharePrice;
+            BigDecimal targetValue = totalValue.multiply(investment.targetAllocation);
+            Long newShares = targetValue.divide(sharePrice, 2, RoundingMode.HALF_EVEN).longValue();
+            Long diffShares = newShares - investment.sharesOwned;
+            if (diffShares != 0)
+            {
+                String op = diffShares < 0 ? "sell" : "buy";
+                System.out.println(String.format("%s %d shares of %s",
+                                                 op,
+                                                 Math.abs(diffShares),
+                                                 investment.ticker));
+                investment.sharesOwned = newShares;
+                investment.actualAllocation = sharePrice.multiply(new BigDecimal(newShares))
+                                                        .divide(totalValue, 2, RoundingMode.HALF_EVEN);
+            }
+        }
     }
 
     public BigDecimal getValue()
