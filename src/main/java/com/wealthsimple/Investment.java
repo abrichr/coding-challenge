@@ -3,7 +3,6 @@ package com.wealthsimple;
 import org.apache.commons.lang3.Validate;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 /**
  * A single investment.
@@ -44,8 +43,7 @@ public class Investment
         {
             printTransaction(diffShares);
             sharesOwned = newShares;
-            actualAllocation = sharePrice.multiply(BigDecimal.valueOf(newShares))
-                                         .divide(portfolioValue, 2, RoundingMode.HALF_EVEN);
+            actualAllocation = Money.divide(sharePrice.multiply(BigDecimal.valueOf(newShares)), portfolioValue);
         }
     }
 

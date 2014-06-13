@@ -3,7 +3,6 @@ package com.wealthsimple;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 
 /**
@@ -24,7 +23,7 @@ public class Portfolio
         for (Investment investment : investments)
         {
             BigDecimal targetValue = totalValue.multiply(investment.targetAllocation);
-            Long newShares = targetValue.divide(investment.sharePrice, 2, RoundingMode.HALF_EVEN).longValue();
+            Long newShares = Money.divide(targetValue, investment.sharePrice).longValue();
             investment.adjust(newShares, totalValue);
         }
     }
