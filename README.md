@@ -2,10 +2,10 @@
 
 A simple Portfolio rebalancer module, featuring:
 
-    * Support for fractional shares
-    * Thorough parameter validation on all public methods
-    * Dependency management (Gradle)
-    * Logging (log4j)
+* Support for fractional shares
+* Thorough parameter validation on all public methods
+* Dependency management (Gradle)
+* Logging (log4j)
     
 Portfolios consists of one or more Investments, which are read from a CSV file and instantiated by PortfolioRebalancer. A Money utility class is also included for maintaining consistency across operations.
 
