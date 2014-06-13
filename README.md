@@ -1,14 +1,20 @@
 # Portfolio Rebalancer
 
 A simple Portfolio rebalancer module, featuring:
-    -   Support for fractional shares
-    -   Thorough parameter validation on all public methods
-    -   Dependency management (Gradle)
-    -   Logging (log4j)
+    * Support for fractional shares
+    * Thorough parameter validation on all public methods
+    * Dependency management (Gradle)
+    * Logging (log4j)
     
 Portfolios consists of one or more Investments, which are read from a CSV file and instantiated by PortfolioRebalancer. A Money utility class is also included for maintaining consistency across operations.
 
-A sample portfolio file is included under <code>resources/test-portfolio.csv</code>, although you may specify the full path to your own CSV file as the first command line parameter to PortfolioRebalancer. To enable verbose logging, uncomment line 3 in the <code>log4j.properties</code> file.
+A sample portfolio file is included under <code>resources/test-portfolio.csv</code>, although you may specify the full path to your own CSV file as the first command line parameter to PortfolioRebalancer. The column order is as follows:
+
+<pre>Ticker,Target allocation,Actual allocation,Shares owned,Share price</pre>
+
+Allocations must be specified as a decimal value between 0 and 1 (inclusive).
+
+To enable verbose logging, uncomment line 3 in the <code>log4j.properties</code> file.
 
 ## Technical Discussion
 
