@@ -25,8 +25,28 @@ public class Investment
         this.ticker = validateTicker(ticker);
         this.targetAllocation = validateAllocation(targetAllocation, "targetAllocation");
         this.actualAllocation = validateAllocation(actualAllocation, "actualAllocation");
-        this.sharesOwned = validateSharesOwned(sharesOwned);
-        this.sharePrice = validateSharePrice(sharePrice);
+        this.sharesOwned = validateShares(sharesOwned, "sharesOwned");
+        this.sharePrice = validateMoney(sharePrice, "sharePrice");
+    }
+
+    public BigDecimal getValue()
+    {
+        return sharePrice.multiply(new BigDecimal(sharesOwned));
+    }
+
+    public void adjust(Long newShares, BigDecimal portfolioValue)
+    {
+        validateShares(newShares, "newShares");
+        validateMoney(portfolioValue, "portfolioValue");
+
+        Long diffShares = newShares - sharesOwned;
+        if (diffShares != 0)
+        {
+            printTransaction(diffShares);
+            sharesOwned = newShares;
+            actualAllocation = sharePrice.multiply(BigDecimal.valueOf(newShares))
+                                         .divide(portfolioValue, 2, RoundingMode.HALF_EVEN);
+        }
     }
 
     private String validateTicker(String ticker)
@@ -45,38 +65,18 @@ public class Investment
         return allocation;
     }
 
-    private Long validateSharesOwned(Long sharesOwned)
+    private Long validateShares(Long sharesOwned, String name)
     {
-        Validate.notNull(sharesOwned, "sharesOwned cannot be null");
-        Validate.isTrue(sharesOwned >= 0, "sharesOwned cannot be negative");
+        Validate.notNull(sharesOwned, String.format("%s cannot be null", name));
+        Validate.isTrue(sharesOwned >= 0, String.format("%s cannot be negative", name));
         return sharesOwned;
     }
 
-    private BigDecimal validateSharePrice(BigDecimal sharePrice)
+    private BigDecimal validateMoney(BigDecimal sharePrice, String name)
     {
-        Validate.notNull(sharePrice, "sharePrice cannot be null");
-        Validate.isTrue(sharePrice.compareTo(BigDecimal.ZERO) >= 0, "sharePrice must be positive");
+        Validate.notNull(sharePrice, String.format("%s cannot be null", name));
+        Validate.isTrue(sharePrice.compareTo(BigDecimal.ZERO) >= 0, String.format("%s must be positive", name));
         return sharePrice;
-    }
-
-    public BigDecimal getValue()
-    {
-        return sharePrice.multiply(new BigDecimal(sharesOwned));
-    }
-
-    public void adjust(Long newShares, BigDecimal portfolioValue)
-    {
-        Long diffShares = newShares - sharesOwned;
-        if (diffShares != 0)
-        {
-            printTransaction(diffShares);
-            sharesOwned = newShares;
-            if (portfolioValue != null)
-            {
-                actualAllocation = sharePrice.multiply(new BigDecimal(newShares))
-                                             .divide(portfolioValue, 2, RoundingMode.HALF_EVEN);
-            }
-        }
     }
 
     private void printTransaction(Long diffShares)

@@ -11,12 +11,6 @@ import java.util.Arrays;
 public class PortfolioRebalancer
 {
     Logger logger = Logger.getLogger(PortfolioRebalancer.class);
-    private Portfolio portfolio;
-
-    public PortfolioRebalancer(Portfolio portfolio)
-    {
-        this.portfolio = portfolio;
-    }
 
     public static void main(String[] args)
     {
@@ -26,15 +20,15 @@ public class PortfolioRebalancer
                 new Investment("TSLA", new BigDecimal(".10"), new BigDecimal(".1912"), 239L, new BigDecimal("8"))
         ));
 
-        PortfolioRebalancer portfolioRebalancer = new PortfolioRebalancer(portfolio);
-        portfolioRebalancer.rebalance();
+        PortfolioRebalancer portfolioRebalancer = new PortfolioRebalancer();
+        portfolioRebalancer.rebalance(portfolio);
     }
 
-    public void rebalance()
+    public void rebalance(Portfolio portfolio)
     {
-        logger.debug("Before rebalancing:\n" + portfolio);
+        logger.debug(String.format("Before rebalancing:%n") + portfolio);
         portfolio.rebalance();
-        logger.debug("After rebalancing:\n" + portfolio);
+        logger.debug(String.format("After rebalancing:%n") + portfolio);
     }
 
 }

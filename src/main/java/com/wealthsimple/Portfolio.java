@@ -23,9 +23,8 @@ public class Portfolio
         BigDecimal totalValue = getValue();
         for (Investment investment : investments)
         {
-            BigDecimal sharePrice = investment.sharePrice;
             BigDecimal targetValue = totalValue.multiply(investment.targetAllocation);
-            Long newShares = targetValue.divide(sharePrice, 2, RoundingMode.HALF_EVEN).longValue();
+            Long newShares = targetValue.divide(investment.sharePrice, 2, RoundingMode.HALF_EVEN).longValue();
             investment.adjust(newShares, totalValue);
         }
     }
