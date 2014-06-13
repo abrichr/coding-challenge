@@ -2,41 +2,65 @@ package com.wealthsimple;
 
 import org.apache.log4j.Logger;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.util.Arrays;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Entrypoint for rebalancing portfolio.
  */
 public class PortfolioRebalancer
 {
-    Logger logger = Logger.getLogger(PortfolioRebalancer.class);
+    private final static String DEFAULT_INPUT_FILENAME = "/test-portfolio.csv";
+    private static       Logger logger                 = Logger.getLogger(PortfolioRebalancer.class);
+    private final Portfolio portfolio;
 
-    public static void main(String[] args)
+    public PortfolioRebalancer(String filePath) throws IOException
     {
-        Portfolio portfolio = new Portfolio(Arrays.asList(
-                new Investment("GOOG",
-                               new BigDecimal(".60"),
-                               new BigDecimal(".5096"),
-                               new BigDecimal("52"),
-                               new BigDecimal("98")),
-                new Investment("AAPL",
-                               new BigDecimal(".30"),
-                               new BigDecimal(".2992"),
-                               new BigDecimal("136"),
-                               new BigDecimal("22")),
-                new Investment("TSLA",
-                               new BigDecimal(".10"),
-                               new BigDecimal(".1912"),
-                               new BigDecimal("239"),
-                               new BigDecimal("8"))
-        ));
-
-        PortfolioRebalancer portfolioRebalancer = new PortfolioRebalancer();
-        portfolioRebalancer.rebalance(portfolio);
+        portfolio = loadPortfolio(filePath);
     }
 
-    public void rebalance(Portfolio portfolio)
+    public static void main(String[] args) throws IOException, URISyntaxException
+    {
+        String filePath =
+                args.length > 0 ? args[0] : PortfolioRebalancer.class.getResource(DEFAULT_INPUT_FILENAME).getPath();
+
+        PortfolioRebalancer portfolioRebalancer = new PortfolioRebalancer(filePath);
+        portfolioRebalancer.rebalance();
+    }
+
+    private static Portfolio loadPortfolio(String filePath) throws IOException
+    {
+        List<Investment> investments = new LinkedList<>();
+
+        logger.info(String.format("Loading file: %s", filePath));
+
+        BufferedReader
+                br =
+                new BufferedReader(new InputStreamReader(new FileInputStream(filePath), Charset.forName("UTF-8")));
+        String line;
+        while ((line = br.readLine()) != null)
+        {
+            String[] parts = line.split(",");
+            String ticker = parts[0];
+            BigDecimal targetAllocation = new BigDecimal(parts[1]);
+            BigDecimal actualAllocation = new BigDecimal(parts[2]);
+            BigDecimal sharesOwned = new BigDecimal(parts[3]);
+            BigDecimal sharePrice = new BigDecimal(parts[4]);
+            Investment investment = new Investment(ticker, targetAllocation, actualAllocation, sharesOwned, sharePrice);
+            investments.add(investment);
+        }
+
+        return new Portfolio(investments);
+    }
+
+    public void rebalance()
     {
         logger.debug(String.format("Before rebalancing:%n") + portfolio);
         portfolio.rebalance();
