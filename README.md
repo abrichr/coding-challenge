@@ -23,7 +23,7 @@ $ ./gradlew -q
 
 A sample portfolio file is included under <code>resources/test-portfolio.csv</code>, although you may specify the full path to your own CSV file as a single command line parameter to <code>PortfolioRebalancer.main()</code> or programmatically as a parameter to <code>PortfolioBalancer</code>'s constructor. The row format is as follows:
 
-<pre><Ticker>,<Target allocation>,<Actual allocation>,<Shares owned>,<Share price></pre>
+<pre>&lt;Ticker&gt;,&lt;Target allocation&gt;,&lt;Actual allocation&gt;,&lt;Shares owned&gt;,&lt;Share price&gt;</pre>
 
 Allocations must be specified as a decimal value between 0 and 1 (inclusive).
 
