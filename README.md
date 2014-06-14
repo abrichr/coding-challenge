@@ -43,6 +43,6 @@ In this design, a <code>Portfolio</code> and its <code>Investment</code>s are so
 
 Additionally, in a well designed system it is highly unlikely that a <code>Portfolio</code> would be stored as a CSV. If it were, a CSV library would be preferable to the current implementation of <code>PortfolioRebalancer.loadPortfolio()</code>, which is not robust to variations in input. However, a significantly better approach would likely be to store this information within a database, or retrieve it from a web service. Similarly, transaction output and logging would likely not be printed to the console, and configuration such as <code>Portfolio.DEFAULT_ALLOW_FRACTIONAL_SHARES</code> would be loaded from a file.
 
-Testing of <code>Portfolio.rebalance()</code> is quite sparse,
+Testing of <code>Portfolio.rebalance()</code> is quite sparse; edge cases should be considered.
 
 Finally, instead of a utility class with static methods, encapsulating logic for operations on financial values in a Money object will be easier to maintain and extend as the project grows. For a project this size, however, the current design is simpler.
